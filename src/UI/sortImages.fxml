@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.SortImage">
+   <children>
+      <VBox fx:id="anchor" prefHeight="448.0" prefWidth="457.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <MenuBar prefHeight="25.0" prefWidth="444.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="Файлы">
+                  <items>
+                    <MenuItem fx:id="uploadFiles" mnemonicParsing="false" text="Загрузить файлы" />
+                      <MenuItem fx:id="addFiles" mnemonicParsing="false" text="Добавить файлы" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Воспроизведение">
+                  <items>
+                    <MenuItem fx:id="run" mnemonicParsing="false" text="Вручную" />
+                      <MenuItem fx:id="runAuto" mnemonicParsing="false" text="Автоматически" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Параметры задержки">
+                  <items>
+                    <MenuItem fx:id="param" mnemonicParsing="false" text="Установить задержку" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
