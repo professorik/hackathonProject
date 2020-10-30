@@ -14,7 +14,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/UI/sortImages.fxml"));
         primaryStage.setTitle("Upload Files");
         primaryStage.getIcons().add(new Image("/resources/cloud-storage-uploading-option.png"));
-        primaryStage.setScene(new Scene(root, 1900, 960));
+        primaryStage.setScene(new Scene(root, 1200, 960));
         primaryStage.show();
     }
 

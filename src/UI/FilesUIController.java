@@ -31,12 +31,13 @@ public class FilesUIController implements Initializable {
         //из-за этого не видно все
         gridPane.setTranslateX(10);
         gridPane.setTranslateY(10);
+        root.setFitToHeight(true);
         root.setContent(gridPane);
     }
 
 
     public static void uploadFilesAndUpdate(boolean isAdding) {
-        final int max_row = 16;
+        final int max_row = 8;
         final FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Files");
         fileChooser.setInitialDirectory(new File("C:/"));
