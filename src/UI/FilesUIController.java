@@ -2,6 +2,7 @@ package UI;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -32,6 +33,7 @@ public class FilesUIController implements Initializable {
         gridPane.setTranslateX(10);
         gridPane.setTranslateY(10);
         root.setFitToHeight(true);
+        gridPane.setPadding(new Insets(0, 5, 20, 0));
         root.setContent(gridPane);
     }
 

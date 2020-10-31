@@ -18,7 +18,9 @@ import org.opencv.objdetect.CascadeClassifier;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URLDecoder;
 import java.nio.ByteBuffer;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Main extends Application {
@@ -29,7 +31,7 @@ public class Main extends Application {
     static ArrayList<Rect> rects;
 
     private static int blurPwr = 10;
-//test
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         AnchorPane root = new AnchorPane();
@@ -51,18 +53,9 @@ public class Main extends Application {
 
     public static void main(String[] args) throws IOException {
         rects = new ArrayList<>();
-        System.out.println("Welcome to OpenCV " + Core.VERSION);
-        Mat m = new Mat(5, 10, CvType.CV_8UC1, new Scalar(0));
-        System.out.println("OpenCV Mat: " + m);
-        Mat mr1 = m.row(1);
-        mr1.setTo(new Scalar(1));
-        Mat mc5 = m.col(5);
-        mc5.setTo(new Scalar(5));
-        System.out.println("OpenCV Mat data:\n" + m.dump());
-
-        CascadeClassifier broccoliDetector = new CascadeClassifier(Main.class.getResource("cascade.xml").getPath().substring(1));
+        CascadeClassifier broccoliDetector = DataProcessor.face_detector;
         //Mat image = imageToMat(new Image("/sample/12112.jpg"));
-        Mat image = Imgcodecs.imread(Main.class.getResource("test.jpg").getPath().substring(1));
+        Mat image = Imgcodecs.imread(Main.class.getResource("/resources/IMG_6160.JPG").getPath().substring(1));
         MatOfRect detector = new MatOfRect();
         //Result list
         broccoliDetector.detectMultiScale(image, detector);
@@ -79,6 +72,25 @@ public class Main extends Application {
         launch(args);
     }
     //https://www.kaggle.com/jessicali9530/caltech256?
+
+    public void processImage(File startFile) throws IOException {
+        rects = new ArrayList<>();
+        CascadeClassifier broccoliDetector = DataProcessor.face_detector;
+        System.out.println(startFile.getAbsolutePath());
+        Mat image = Imgcodecs.imread(startFile.getAbsolutePath());
+        System.out.println(image.empty());
+        MatOfRect detector = new MatOfRect();
+        broccoliDetector.detectMultiScale(image, detector);
+        for (Rect rect : detector.toArray()) {
+            rects.add(rect);
+            Imgproc.rectangle(image, new Point(rect.x-1, rect.y-1), new Point(rect.x+rect.width, rect.y+ rect.height), new Scalar(0,0,255));
+            Imgproc.GaussianBlur(image.submat(rect), image.submat(rect), new Size(55, 55), blurPwr);
+        }
+        result = matToImage(image);
+        File file = new File("D://result/"+startFile.getName().split("\\.")[0]+".png");
+        file.getParentFile().mkdirs();
+        ImageIO.write(SwingFXUtils.fromFXImage(result, null), "png", file);
+    }
 
     private MatOfRect detectInImage(CascadeClassifier detector, Image image) {
         MatOfRect items = new MatOfRect();

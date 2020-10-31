@@ -18,15 +18,15 @@
                       <MenuItem fx:id="addFiles" mnemonicParsing="false" text="Добавить файлы" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Воспроизведение">
+                <Menu mnemonicParsing="false" text="Запустить обработку">
                   <items>
-                    <MenuItem fx:id="run" mnemonicParsing="false" text="Вручную" />
-                      <MenuItem fx:id="runAuto" mnemonicParsing="false" text="Автоматически" />
+                    <MenuItem fx:id="run" mnemonicParsing="false" text="Начать" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Параметры задержки">
+                <Menu mnemonicParsing="false" text="Настройки">
                   <items>
-                    <MenuItem fx:id="param" mnemonicParsing="false" text="Установить задержку" />
+                    <MenuItem fx:id="processingSettings" mnemonicParsing="false" text="Настройка обработки" />
+                        <MenuItem fx:id="viewSettings" disable="true" mnemonicParsing="false" text="Настройка вида" />
                   </items>
                 </Menu>
               </menus>

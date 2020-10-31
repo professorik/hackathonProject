@@ -19,6 +19,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import processing.MainProcessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,16 +32,21 @@ public class SortImage implements Initializable {
 
     @FXML
     private VBox anchor;
+
     @FXML
     private MenuItem uploadFiles;
+
     @FXML
     private MenuItem addFiles;
+
     @FXML
     private MenuItem run;
+
     @FXML
-    private MenuItem runAuto;
+    private MenuItem processingSettings;
+
     @FXML
-    private MenuItem param;
+    private MenuItem viewSettings;
 
     public static ArrayList<File> inputFiles = new ArrayList<>();
 
@@ -53,7 +59,6 @@ public class SortImage implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //Подготовил FileChooser для загрузки файлов, установив фильры
         fileChooser.setTitle("Select Files");
         fileChooser.setInitialDirectory(new File("C:/Users"));
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("All", "*.jpg", "*.png", "*.txt", "*.mp4", "*.avi"));
@@ -73,8 +78,7 @@ public class SortImage implements Initializable {
         uploadFiles.setOnAction(event -> FilesUIController.uploadFilesAndUpdate(false));
         addFiles.setOnAction(event -> FilesUIController.uploadFilesAndUpdate(true));
         run.setOnAction(event -> startPlay());
-        runAuto.setOnAction(event -> startPlayWith());
-        param.setOnAction(event -> setParam());
+        viewSettings.setOnAction(event -> setParam());
     }
 
     private void setParam(){
@@ -111,15 +115,20 @@ public class SortImage implements Initializable {
 
     private void startPlay(){
         if (!inputFiles.isEmpty()) {
+            MainProcessor mainProcessor = new MainProcessor();
             ProgressForm pForm = new ProgressForm();
             Task<Void> task = new Task<>() {
                 @Override
-                public Void call() throws InterruptedException {
+                public Void call() {
                     for (int i = 0; i < inputFiles.size(); i++) {
-                        //TODO: processing data
                         updateProgress(i, inputFiles.size());
                         updateMessage(inputFiles.get(i).getName());
-                        Thread.sleep(500);
+                        try {
+                            mainProcessor.process(inputFiles.get(i));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        //Thread.sleep(500);
                     }
                     updateProgress(inputFiles.size(), inputFiles.size());
                     return null;
@@ -132,12 +141,6 @@ public class SortImage implements Initializable {
             pForm.getDialogStage().show();
             Thread thread = new Thread(task);
             thread.start();
-        }
-    }
-
-    private void startPlayWith(){
-        if (!inputFiles.isEmpty()) {
-
         }
     }
 
