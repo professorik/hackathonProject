@@ -1,7 +1,7 @@
 package VideoAnalyser;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -46,10 +46,11 @@ public class Stream extends Application {
     Stage stage;
     AnimationTimer timer;
 
-    private static int blurPwr = 10;
+    private static int blurPwr = 30;
+    private static ArrayList<Image> queue;
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws InterruptedException {
         this.stage = stage;
         initOpenCv();
 
@@ -69,27 +70,44 @@ public class Stream extends Application {
         for (int i = 0; i < matOfRect.length; i++) {
             matOfRect[i] = new MatOfRect();
         }
-
+        AnimationTimer timer2 = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                g2d.drawImage(queue.get(0), 0, 0);
+                queue.remove(0);
+            }
+        };
+        final boolean[] fl = {true};
+        long s = System.currentTimeMillis();
         timer = new AnimationTimer() {
             Mat mat = new Mat();
             @Override
             public void handle(long now) {
                 videoCapture.read(mat);
-                ++countFrames;
-                face_detector_def.detectMultiScale(mat, matOfRect[0]);
-                head_detector.detectMultiScale(mat, matOfRect[1]);
-                for (Rect rect : matOfRect[0].toArray()) {
-                   Imgproc.rectangle(mat, new Point(rect.x-1, rect.y-1), new Point(rect.x+rect.width, rect.y+ rect.height), new Scalar(0,0,255));
+                //++countFrames;
+                //face_detector_def.detectMultiScale(mat, matOfRect[0]);
+                //head_detector.detectMultiScale(mat, matOfRect[1]);
+                //DataProcessor.face_detector_tree.detectMultiScale(mat, matOfRect[0]);
+                DataProcessor.face_detector_2.detectMultiScale(mat, matOfRect[1]);
+                /*for (Rect rect : matOfRect[0].toArray()) {
+                   //Imgproc.rectangle(mat, new Point(rect.x-1, rect.y-1), new Point(rect.x+rect.width, rect.y+ rect.height), new Scalar(0,0,255));
                    Imgproc.GaussianBlur(mat.submat(rect), mat.submat(rect), new Size(55, 55), blurPwr);
-                }
+                }*/
                 for (Rect rect : matOfRect[1].toArray()) {
                     //Rect rect1 = new Rect(new Point(rect.x-50, rect.y-50), new Point(Math.min(640, rect.x+ rect.width*5), Math.min(rect.y+ rect.height*6, 480)));
                     Imgproc.rectangle(mat, new Point(rect.x-1, rect.y-1), new Point(rect.x+rect.width, rect.y+ rect.height), new Scalar(0,255,0));
                     Imgproc.GaussianBlur(mat.submat(rect), mat.submat(rect), new Size(55, 55), blurPwr);
                 }
-                if (matOfRect[0].toArray().length + matOfRect[1].toArray().length == 0) ++failed;
-                Image image = DataProcessor.mat2Image(mat);
-                g2d.drawImage(image, 0, 0);
+                //if (matOfRect[0].toArray().length + matOfRect[1].toArray().length == 0) ++failed;
+                //Image image = DataProcessor.mat2Image(mat);
+                queue.add(DataProcessor.mat2Image(mat));
+                if (fl[0] && queue.size() > 0){
+                    fl[0] = false;
+                    Writer.println(String.valueOf((System.currentTimeMillis()-s)/1000.), 34);
+                    timer2.start();
+                }
+                /*g2d.drawImage(queue.get(0), 0, 0);
+                queue.remove(0);*/
             }
         };
         timer.start();
@@ -115,6 +133,7 @@ public class Stream extends Application {
 
     public static void main(String[] args) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        queue = new ArrayList<>();
         launch(args);
     }
 }
